@@ -1,42 +1,52 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import YTSearch from 'youtube-api-search';
+import XMLParser from 'react-xml-parser';
 import SearchBar from './components/search_bar';
 import VideoList from './components/video_list';
 import VideoDetail from './components/video_detail';
-const API_KEY = 'AIzaSyCB5AW2Acz2gAAiz4vCiuzLnFMrZ1ixOJs';
 
 class App extends Component {
    constructor(props) {
       super(props);
 
       this.state = {
-         videos: [],
-         selectedVideo: null
+         images: [],
+         selectedVideo: null,
+         theText: 'not yet loaded'
       };
 
-      this.videoSearch('Minions');
+      this.imageSearch('');
    }
 
-   videoSearch(term) {
-      YTSearch({key: API_KEY, term: term}, (videos) => {
-         this.setState({
-            videos: videos,
-            selectedVideo: videos[0]
+   imageSearch(term) {
+      fetch('Traffic_Camera_Locations_En.xml')
+         .then((response) => response.text())
+         .then((responseText) => {
+            this.setState({
+               images: new XMLParser().parseFromString(responseText).children,
+               selectedVideo: null,
+               theText: new XMLParser().parseFromString(responseText).children.length.toString()
+            });
          });
-      });
+      // YTSearch({key: API_KEY, term: term}, (videos) => {
+      //    this.setState({
+      //       videos: videos,
+      //       selectedVideo: videos[0]
+      //    });
+      // });
    }
 
    render() {
-      const videoSearch = _.debounce((term) => { this.videoSearch(term) }, 300);
+      const imageSearch = _.debounce((term) => { this.imageSearch(term) }, 300);
 
       return (
          <div>
-            <SearchBar onSearchTermChange={videoSearch} />
+            <SearchBar onSearchTermChange={imageSearch} />
+            <div>{this.state.theText}</div>
             <VideoDetail video={this.state.selectedVideo} />
             <VideoList
-               onVideoSelect={selectedVideo => this.setState({selectedVideo}) }
-               videos={this.state.videos} />
+               onImageSelect={selectedVideo => this.setState({selectedVideo}) }
+               images={this.state.images} />
          </div>
       );
    }

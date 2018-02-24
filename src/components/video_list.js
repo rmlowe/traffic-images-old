@@ -2,12 +2,12 @@ import React from 'react';
 import VideoListItem from './video_list_item';
 
 const VideoList = (props) => {
-   const videoItems = props.videos.map((video) => {
+   const videoItems = props.images.map((image) => {
       return (
          <VideoListItem
-            onVideoSelect={props.onVideoSelect}
-            key={video.etag}
-            video={video} />
+            onImageSelect={props.onVideoSelect}
+            key={image.getElementsByTagName('key').value + Math.random().toString()}
+            image={image} />
       );
    });
 
