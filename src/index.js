@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import XMLParser from 'react-xml-parser';
 import SearchBar from './components/search_bar';
-import VideoList from './components/video_list';
+import ImageList from './components/image_list';
 import VideoDetail from './components/video_detail';
 
 class App extends Component {
@@ -11,7 +11,7 @@ class App extends Component {
 
       this.state = {
          images: [],
-         selectedVideo: null,
+         selectedImage: null,
          theText: 'not yet loaded'
       };
 
@@ -22,10 +22,12 @@ class App extends Component {
       fetch('Traffic_Camera_Locations_En.xml')
          .then((response) => response.text())
          .then((responseText) => {
+            const images = new XMLParser().parseFromString(responseText).children;
+            const results = images.filter(image => image.getElementsByTagName('description')[0].value.toLowerCase().includes(term.toLowerCase()));
             this.setState({
-               images: new XMLParser().parseFromString(responseText).children,
-               selectedVideo: null,
-               theText: new XMLParser().parseFromString(responseText).children.length.toString()
+               images: results,
+               selectedImage: null,
+               theText: results.length.toString()
             });
          });
       // YTSearch({key: API_KEY, term: term}, (videos) => {
@@ -44,8 +46,8 @@ class App extends Component {
             <SearchBar onSearchTermChange={imageSearch} />
             <div>{this.state.theText}</div>
             <VideoDetail video={this.state.selectedVideo} />
-            <VideoList
-               onImageSelect={selectedVideo => this.setState({selectedVideo}) }
+            <ImageList
+               onImageSelect={selectedImage => this.setState({selectedImage}) }
                images={this.state.images} />
          </div>
       );
