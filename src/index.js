@@ -11,8 +11,7 @@ class App extends Component {
 
       this.state = {
          images: [],
-         selectedImage: null,
-         theText: 'not yet loaded'
+         selectedImage: null
       };
 
       this.imageSearch('');
@@ -26,16 +25,9 @@ class App extends Component {
             const results = images.filter(image => image.getElementsByTagName('description')[0].value.toLowerCase().includes(term.toLowerCase()));
             this.setState({
                images: results,
-               selectedImage: null,
-               theText: results.length.toString()
+               selectedImage: null
             });
          });
-      // YTSearch({key: API_KEY, term: term}, (videos) => {
-      //    this.setState({
-      //       videos: videos,
-      //       selectedVideo: videos[0]
-      //    });
-      // });
    }
 
    render() {
@@ -44,8 +36,6 @@ class App extends Component {
       return (
          <div>
             <SearchBar onSearchTermChange={imageSearch} />
-            <div>{this.state.theText}</div>
-            <VideoDetail video={this.state.selectedVideo} />
             <ImageList
                onImageSelect={selectedImage => this.setState({selectedImage}) }
                images={this.state.images} />
